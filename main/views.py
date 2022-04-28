@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, send_from_directory
 
 import main.utils
 
@@ -12,6 +12,11 @@ def main_page():
 
 @main_blueprint.route('/search')
 def search_post():
-    post_hash = request.args["post_hash"]
+    post_hash = request.args["post_hash"].lower().title()
     posts = main.utils.search_post(post_hash)
-    return render_template('post_list.html', posts=posts, post_hash=post_hash.lower().title())
+    return render_template('post_list.html', posts=posts, post_hash=post_hash)
+
+
+@main_blueprint.route("/uploads/<path:path>")
+def static_dir(path):
+    return send_from_directory("uploads", path)
